@@ -30,10 +30,10 @@ public class UserServiceImpl implements UserService {
     private XmjbqUserMapper userMapper;
 
     @Override
-    // 两阶段事务（支持夸库事务）
-    @ShardingTransactionType(TransactionType.XA)
     // 本地事务
     //@ShardingTransactionType(TransactionType.LOCAL)
+    // 两阶段事务（支持夸库事务）
+    @ShardingTransactionType(TransactionType.XA)
     @Transactional
     public ResponseJson insertUser(Login login) {
         ResponseJson responseJson = new ResponseJson();
@@ -63,6 +63,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @ShardingTransactionType(TransactionType.XA)
+    @Transactional
     public ResponseJson updateUserUserNameByPhone(Login login) {
         ResponseJson responseJson = new ResponseJson();
         try{
@@ -70,7 +72,12 @@ public class UserServiceImpl implements UserService {
             String userName = login.getName();
             XmjbqUser user = userMapper.findUserByPhone(phone);
             user.setUserName(userName);
-            userMapper.updateByPrimaryKeySelective(user);
+            // 需要注意：如果只是分表或者分库，记得是根据分片字段是更新数据，如果是分表分库是根据分表的分片字段去更新数据，不然会出现路由失败的情况，即更新数据失败
+            //userMapper.updateByPrimaryKeySelective(user);
+            //userMapper.updateUserNameById(userName,user.getId());
+            userMapper.updateUserNameByPhone(userName,phone);
+            // 测试出现异常是否会回滚
+            //int result = 10/0;
         }catch (Exception e){
             logger.error("更新用户昵称报错：",e);
             responseJson.setSuccess(false);
@@ -82,6 +89,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @ShardingTransactionType(TransactionType.XA)
+    @Transactional
     public ResponseJson deleteUserByPhone(Login login) {
         ResponseJson responseJson = new ResponseJson();
         try{
@@ -98,11 +107,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @ShardingTransactionType(TransactionType.XA)
+    @Transactional
     public ResponseJson findUserByPhone(Login login) {
         ResponseJson responseJson = new ResponseJson();
         try{
             String phone = login.getPhone();
-            String userName = login.getName();
             XmjbqUser user = userMapper.findUserByPhone(phone);
             responseJson.setData(user);
         }catch (Exception e){

@@ -26,7 +26,7 @@ public class XmjbqUserDataBasesPreciseShardingAlgorithm implements PreciseShardi
         // 分片字段值
         String value = preciseShardingValue.getValue();
         // 现在算法是:%2 求余如果是0则ds0.xmjbq_user,如果是1则ds0.xmjbq_user。但是由于id是字符串而且是很长的，所以截取最后一位然后转为Integer类型再求余
-        value = value.substring(value.length()-5,value.length()-2);
+        value = value.substring(value.length()-6,value.length()-3);
         Integer number = Integer.valueOf(value);
         int result = number % 2;
         for (String s : collection) {
