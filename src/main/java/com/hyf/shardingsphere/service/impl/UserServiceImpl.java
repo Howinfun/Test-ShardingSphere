@@ -10,14 +10,16 @@ import io.shardingsphere.core.keygen.DefaultKeyGenerator;
 import io.shardingsphere.transaction.annotation.ShardingTransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import javax.annotation.Resource;
 
 /**
  * @author howinfun
  * @version 1.0
- * @desc
+ * @desc 注意：关于修改数据的（更新和删除）。如果只是分表或分库，根据分片字段修改即可。如果是分表分库的，需要根据分表的分片字段修改。
  * @date 2019/2/13
  * @company XMJBQ
  */
@@ -26,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Autowired
+    @Resource
     private XmjbqUserMapper userMapper;
 
     @Override
@@ -52,7 +54,10 @@ public class UserServiceImpl implements UserService {
             user.setRealName("");
             user.setUserName("");
             userMapper.insert(user);
+            int result = 10/0;
         }catch (Exception e){
+            // 要加这个玩意，不然事务回滚会失败
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             logger.error("添加新用户报错：",e);
             responseJson.setSuccess(false);
             responseJson.setCode(500);
@@ -77,8 +82,10 @@ public class UserServiceImpl implements UserService {
             //userMapper.updateUserNameById(userName,user.getId());
             userMapper.updateUserNameByPhone(userName,phone);
             // 测试出现异常是否会回滚
-            //int result = 10/0;
+            int result = 10/0;
         }catch (Exception e){
+            // 要加这个玩意，不然事务回滚会失败
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             logger.error("更新用户昵称报错：",e);
             responseJson.setSuccess(false);
             responseJson.setCode(500);
@@ -97,6 +104,8 @@ public class UserServiceImpl implements UserService {
             String phone = login.getPhone();
             userMapper.deleteUserByPhone(phone);
         }catch (Exception e){
+            // 要加这个玩意，不然事务回滚会失败
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             logger.error("删除用户报错：",e);
             responseJson.setSuccess(false);
             responseJson.setCode(500);
@@ -116,6 +125,8 @@ public class UserServiceImpl implements UserService {
             XmjbqUser user = userMapper.findUserByPhone(phone);
             responseJson.setData(user);
         }catch (Exception e){
+            // 要加这个玩意，不然事务回滚会失败
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             logger.error("查询用户信息报错：",e);
             responseJson.setSuccess(false);
             responseJson.setCode(500);

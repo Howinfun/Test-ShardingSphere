@@ -2,7 +2,6 @@ package com.hyf.shardingsphere.mapper;
 
 import com.hyf.shardingsphere.entity.XmjbqUser;
 import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Component;
 import tk.mybatis.mapper.common.BaseMapper;
 
 /**
@@ -13,7 +12,6 @@ import tk.mybatis.mapper.common.BaseMapper;
  * @company XMJBQ
  */
 @Mapper
-@Component("userMapper")
 public interface XmjbqUserMapper extends BaseMapper<XmjbqUser> {
 
     @Select("select * from xmjbq_user where phone = #{phone}")
