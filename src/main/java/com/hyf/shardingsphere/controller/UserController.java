@@ -42,6 +42,51 @@ public class UserController {
         return responseJson;
     }
 
+    @PostMapping("updateUserUserNameByPhone")
+    public ResponseJson updateUserUserNameByPhone(@RequestBody Login login){
+        ResponseJson responseJson = new ResponseJson();
+        try {
+            responseJson = userService.updateUserUserNameByPhone(login);
+        }catch (Exception e){
+            logger.error("更新用户信息：",e);
+            responseJson.setSuccess(false);
+            responseJson.setCode(500);
+            responseJson.setMsg("服务器出错");
+            return responseJson;
+        }
+        return responseJson;
+    }
+
+    @PostMapping("deleteUserByPhone")
+    public ResponseJson deleteUserByPhone(@RequestBody Login login){
+        ResponseJson responseJson = new ResponseJson();
+        try {
+            responseJson = userService.deleteUserByPhone(login);
+        }catch (Exception e){
+            logger.error("删除用户：",e);
+            responseJson.setSuccess(false);
+            responseJson.setCode(500);
+            responseJson.setMsg("服务器出错");
+            return responseJson;
+        }
+        return responseJson;
+    }
+
+    @PostMapping("findUserByPhone")
+    public ResponseJson findUserByPhone(@RequestBody Login login){
+        ResponseJson responseJson = new ResponseJson();
+        try {
+            responseJson = userService.findUserByPhone(login);
+        }catch (Exception e){
+            logger.error("查询用户：",e);
+            responseJson.setSuccess(false);
+            responseJson.setCode(500);
+            responseJson.setMsg("服务器出错");
+            return responseJson;
+        }
+        return responseJson;
+    }
+
     public static void main(String[] args) {
         int sum = 0*0;
     }

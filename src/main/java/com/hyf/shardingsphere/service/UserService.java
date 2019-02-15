@@ -13,4 +13,10 @@ import com.hyf.shardingsphere.entity.Login;
 public interface UserService {
 
     public ResponseJson insertUser(Login login);
+
+    public ResponseJson updateUserUserNameByPhone(Login login);
+
+    public ResponseJson deleteUserByPhone(Login login);
+
+    public ResponseJson findUserByPhone(Login login);
 }

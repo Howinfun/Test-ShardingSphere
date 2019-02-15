@@ -8,7 +8,7 @@ import java.util.Collection;
 /**
  * @author howinfun
  * @version 1.0
- * @desc 分表不分库：精确分片算法，用于=和IN
+ * @desc 分表：精确分片算法，用于=和IN
  * @date 2019/2/14
  * @company XMJBQ
  */
